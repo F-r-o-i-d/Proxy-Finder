@@ -26,12 +26,14 @@ def CheckProxy(proxy, timeout=5):
     try:
         proxy = {'http': proxy}
         r = requests.get(random.choice(apis), proxies=proxy, timeout=timeout)
-        if r.status_code == 200 and proxy.split(':')[0] in r.text:
-            return True
+        if r.status_code == 200:
+            if proxy.split(':')[0] in r.text:
+                return 2
+            return 1
         else:
-            return False
+            return 0
     except:
-        return False
+        return 0
 
 def check_if_alive(proxy):
     sock = socket.socket()
@@ -61,15 +63,20 @@ def GetProxy():
         for proxy in proxys:
             is_alive = check_if_alive(proxy)
             if is_alive:
-                if CheckProxy(proxy):
-                    sendwebhookMessage(proxy)
+                if CheckProxy(proxy) == 1:
+                    sendwebhookMessage(proxy + "Transparent Proxy")
                     print("+"  +proxy)
+                elif CheckProxy(proxy) == 2:
+                    sendwebhookMessage(proxy + "Anonymous / Elite Proxy")
+                    print("+" + proxy)
                 else:
                     print("/" + proxy)
             else:
                 print("-" + proxy)
 
 if __name__ == '__main__':
+    sendwebhookMessage("Proxy Finder Started")
+
     for i in range(10):
         t = threading.Thread(target=GetProxy)
         t.start()
