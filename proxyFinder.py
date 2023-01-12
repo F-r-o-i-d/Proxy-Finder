@@ -55,17 +55,19 @@ def sendwebhookMessage(message):
 
 def GetProxy():
     while True:
-        common_ports = [8080, 3128, 1080, 6588, 8000, 8888, 9000, 10000]
-        proxy = GenerateRandomIp() + ':' + str(random.choice(common_ports))
-        is_alive = check_if_alive(proxy)
-        if is_alive:
-            if CheckProxy(proxy):
-                sendwebhookMessage(proxy)
-                print("+"  +proxy)
+        common_ports = [8080, 3128, 1080, 6588, 8081, 8081, 8090, 13128]
+        ip = GenerateRandomIp()
+        proxys = [ip + ":" + str(port) for port in common_ports]
+        for proxy in proxys:
+            is_alive = check_if_alive(proxy)
+            if is_alive:
+                if CheckProxy(proxy):
+                    sendwebhookMessage(proxy)
+                    print("+"  +proxy)
+                else:
+                    print("/" + proxy)
             else:
-                print("/" + proxy)
-        else:
-            print("-" + proxy)
+                print("-" + proxy)
 
 if __name__ == '__main__':
     for i in range(10):
